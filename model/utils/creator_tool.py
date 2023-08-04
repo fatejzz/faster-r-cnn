@@ -6,7 +6,7 @@ from model.utils.bbox_tools import bbox2loc, bbox_iou, loc2bbox
 
 class ProposalTargetCreator(object):
     """Assign ground truth bounding boxes to given RoIs.
-
+    '''将gt_box与上一步得到特征图对应点产生的box相联系'''
     The :meth:`__call__` of this class generates training targets
     for each object proposal.
     This is used to train Faster RCNN [#]_.
@@ -82,15 +82,15 @@ class ProposalTargetCreator(object):
                 Its shape is :math:`(S, 4)`.
             * **gt_roi_loc**: Offsets and scales to match \
                 the sampled RoIs to the ground truth bounding boxes. \
-                Its shape is :math:`(S, 4)`.
+                Its shape is :math:`(S, 4)`. roi同match的box之间的转换
             * **gt_roi_label**: Labels assigned to sampled RoIs. Its shape is \
                 :math:`(S,)`. Its range is :math:`[0, L]`. The label with \
-                value 0 is the background.
+                value 0 is the background. 对应roi的标签
 
         """
         n_bbox, _ = bbox.shape
 
-        roi = np.concatenate((roi, bbox), axis=0)
+        roi = np.concatenate((roi, bbox), axis=0) ##有必要吗？
 
         pos_roi_per_image = np.round(self.n_sample * self.pos_ratio)
         iou = bbox_iou(roi, bbox)
@@ -251,11 +251,11 @@ class AnchorTargetCreator(object):
     def _calc_ious(self, anchor, bbox, inside_index):
         # ious between the anchors and the gt boxes
         ious = bbox_iou(anchor, bbox)
-        argmax_ious = ious.argmax(axis=1)
-        max_ious = ious[np.arange(len(inside_index)), argmax_ious]
-        gt_argmax_ious = ious.argmax(axis=0)
+        argmax_ious = ious.argmax(axis=1) ##all anchor to which gt_box
+        max_ious = ious[np.arange(len(inside_index)), argmax_ious] ##[index[i],iou2TrueGtBox]
+        gt_argmax_ious = ious.argmax(axis=0)##每一列上的最大值 第i列代表第i个gt_box同各anchor的iou
         gt_max_ious = ious[gt_argmax_ious, np.arange(ious.shape[1])]
-        gt_argmax_ious = np.where(ious == gt_max_ious)[0]
+        gt_argmax_ious = np.where(ious == gt_max_ious)[0]##？？
 
         return argmax_ious, max_ious, gt_argmax_ious
 
@@ -277,7 +277,7 @@ def _unmap(data, count, index, fill=0):
 
 def _get_inside_index(anchor, H, W):
     # Calc indicies of anchors which are located completely inside of the image
-    # whose size is speficied.
+    # whose size is speficied. anchor框完全位于图片中的
     index_inside = np.where(
         (anchor[:, 0] >= 0) &
         (anchor[:, 1] >= 0) &
@@ -390,7 +390,7 @@ class ProposalCreator:
             n_pre_nms = self.n_test_pre_nms
             n_post_nms = self.n_test_post_nms
 
-        # Convert anchors into proposal via bbox transformations.
+        # Convert anchors into proposal via bbox transformations. 基于anchor和特征值生成proposals
         # roi = loc2bbox(anchor, loc)
         roi = loc2bbox(anchor, loc)
 

@@ -117,6 +117,7 @@ class FasterRCNNTrainer(nn.Module):
             self.loc_normalize_std)
         # NOTE it's all zero because now it only support for batch=1 now
         sample_roi_index = t.zeros(len(sample_roi))
+
         roi_cls_loc, roi_score = self.faster_rcnn.head(
             features,
             sample_roi,

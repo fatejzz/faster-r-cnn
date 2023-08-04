@@ -172,7 +172,7 @@ def bbox_iou(bbox_a, bbox_b):
     if bbox_a.shape[1] != 4 or bbox_b.shape[1] != 4:
         raise IndexError
 
-    # top left
+    # top left 一个roi(4,)同各gt(N,4)之间的关系
     tl = xp.maximum(bbox_a[:, None, :2], bbox_b[:, :2])
     # bottom right
     br = xp.minimum(bbox_a[:, None, 2:], bbox_b[:, 2:])

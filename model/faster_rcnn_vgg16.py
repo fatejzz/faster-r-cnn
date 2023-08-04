@@ -129,7 +129,7 @@ class VGG16RoIHead(nn.Module):
                 RoIs from the :math:`i` th image,
                 :math:`R' = \\sum _{i=1} ^ N R_i`.
             roi_indices (Tensor): An array containing indices of images to
-                which bounding boxes correspond to. Its shape is :math:`(R',)`.
+                which bounding boxes correspond to. Its shape is :math:`(R',)`. 各box属于哪一张图片
 
         """
         # in case roi_indices is  ndarray

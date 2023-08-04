@@ -50,7 +50,7 @@ class RegionProposalNetwork(nn.Module):
         self.anchor_base = generate_anchor_base(
             anchor_scales=anchor_scales, ratios=ratios)
         self.feat_stride = feat_stride
-        self.proposal_layer = ProposalCreator(self, **proposal_creator_params)
+        self.proposal_layer = ProposalCreator(self, **proposal_creator_params) ##生成proposals
         n_anchor = self.anchor_base.shape[0]
         self.conv1 = nn.Conv2d(in_channels, mid_channels, 3, 1, 1)
         self.score = nn.Conv2d(mid_channels, n_anchor * 2, 1, 1, 0)
